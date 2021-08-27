@@ -70,6 +70,11 @@ public class PlayerMovement : MonoBehaviour
                     audioSource.clip = shootAudio;
                     audioSource.Play();
                 }
+                Destructables crate = hit.transform.GetComponent<Destructables>();
+                if (crate != null)
+                {
+                    crate.OncrateDestroy();
+                }
             }
             else
             {
