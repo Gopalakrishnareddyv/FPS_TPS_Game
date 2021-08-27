@@ -8,7 +8,7 @@ public class BulletPooling : MonoBehaviour
     [SerializeField]GameObject currentBullet;
     [SerializeField] Transform firePoint;
     public static BulletPooling bulletIstance;
-    public int bulletCount;
+    public int bulletCount=50;
     Stack<GameObject> bulletPool = new Stack<GameObject>();
     private void Awake()
     {
@@ -22,12 +22,13 @@ public class BulletPooling : MonoBehaviour
         if (bulletPool.Count == 0)
         {
             bulletPool.Push(Instantiate(bulletPrefab));
-            bulletCount++;
             bulletPool.Peek().SetActive(false);
             bulletPool.Peek().name = "Bullet";
         }
         GameObject temp = bulletPool.Pop();
         temp.SetActive(true);
+        bulletCount--;
+        
         temp.transform.position = firePoint.position;
         temp.transform.rotation = firePoint.rotation;
         currentBullet = temp;
@@ -36,5 +37,12 @@ public class BulletPooling : MonoBehaviour
     {
         bulletPool.Push(BulletAdd);
         bulletPool.Peek().SetActive(false);
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            bulletCount = 50;
+        }
     }
 }

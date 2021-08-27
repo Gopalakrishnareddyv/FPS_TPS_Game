@@ -15,7 +15,8 @@ public class BulletMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.velocity =Camera.main.transform.rotation* Vector3.forward * bulletSpeed;
+        rb.velocity = Vector3.forward * bulletSpeed;
+
         //StartCoroutine(BulletInActive());
         StartCoroutine(AddingBullet());
     }

@@ -12,6 +12,10 @@ public class PlayerMovement : MonoBehaviour
     AudioSource audioSource;
     [SerializeField] AudioClip shootAudio;
     [SerializeField] Transform firePosition;
+    [SerializeField]float fireRate = 1f;
+    public bool isCoin = false;
+    [SerializeField] AudioClip coinClip;
+    [SerializeField] GameObject weapon;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +27,10 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Movement();
-        FireGun();
+        if (weapon.activeInHierarchy)
+        {
+            FireGun();
+        }
     }
     public void Movement()
     {
@@ -34,14 +41,18 @@ public class PlayerMovement : MonoBehaviour
     }
     public void FireGun()
     {
-        if (Input.GetMouseButtonDown(0))
+        fireRate -= Time.deltaTime;
+        if (Input.GetMouseButtonDown(0) && fireRate <= 0)
         {
-            if (BulletPooling.bulletIstance.bulletCount <= 50)
+            
+            if (BulletPooling.bulletIstance.bulletCount >0)
             {
                 BulletPooling.bulletIstance.BulletSpawn();
+                fireRate = 1f;
+                
+                
             }
-            audioSource.clip = shootAudio;
-            audioSource.Play();
+            
             Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width/2f,Screen.height/2f,0f));
             RaycastHit hit;
             //Debug.Log(Physics.Raycast(ray,out hit, Mathf.Infinity));
@@ -56,6 +67,8 @@ public class PlayerMovement : MonoBehaviour
                     effect.transform.position = hit.point;
                     effect.SetActive(true);
                     StartCoroutine(HitMarkerInActive(effect));
+                    audioSource.clip = shootAudio;
+                    audioSource.Play();
                 }
             }
             else
@@ -63,6 +76,13 @@ public class PlayerMovement : MonoBehaviour
                 
                 muzzleFlashPrefab.Play();
                 StartCoroutine(ParticleStop());
+                audioSource.clip = shootAudio;
+                audioSource.Play();
+            }
+            if (isCoin)
+            {
+                audioSource.clip = coinClip;
+                audioSource.Play();
             }
         }
     }
